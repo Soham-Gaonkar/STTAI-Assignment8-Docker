@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FastAPI Frontend</title>
+</head>
+<body>
+    <h2>FastAPI Frontend</h2>
+    <input type="text" id="input_text" placeholder="Enter text here">
+    <button onclick="getData()">Get</button>
+    <button onclick="insertData()">Insert</button>
+
+    <h3>Output:</h3>
+    <p id="output"></p>
+
+    <script>
+        function getData() {
+            fetch("/get")
+            .then(response => response.json())
+            .then(data => document.getElementById("output").innerText = JSON.stringify(data))
+            .catch(error => console.error("Error:", error));
+        }
+
+        function insertData() {
+            let text = document.getElementById("input_text").value;  // Get user input
+
+            if (!text) {
+                alert("Please enter text before inserting!");
+                return;
+            }
+
+            fetch("/insert", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ text: text })  // Send text as JSON
+            })
+            .then(response => response.json())
+            .then(data => document.getElementById("output").innerText = JSON.stringify(data))
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
