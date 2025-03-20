@@ -1,26 +1,20 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from elasticsearch import Elasticsearch
-import uvicorn
+from pydantic import BaseModel
 
 app = FastAPI()
+es = Elasticsearch("http://elasticsearch:9200")
 
-# Connect to Elasticsearch container
-es = Elasticsearch(["http://elasticsearch:9200"])
+class Document(BaseModel):
+    text: str
 
 @app.get("/search")
-async def search():
-    query = {"query": {"match_all": {}}}
-    response = es.search(index="documents", body=query)
-    return response["hits"]["hits"]
+async def search(query: str):
+    res = es.search(index="documents", body={"query": {"match": {"text": query}}})
+    hits = res["hits"]["hits"]
+    return hits[0]["_source"] if hits else {}
 
 @app.post("/insert")
-async def insert():
-    data = {
-        "id": "1",
-        "text": "First paragraph from Wikipedia page on India"
-    }
-    es.index(index="documents", id=1, body=data)
-    return {"message": "Document inserted"}
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=9567)
+async def insert(doc: Document):
+    res = es.index(index="documents", body={"text": doc.text})
+    return {"result": res["result"]}
