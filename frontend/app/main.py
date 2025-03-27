@@ -5,7 +5,7 @@ import requests
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-BACKEND_URL = "http://backend:9567"
+BACKEND_URL = "http://backend:9567" # replace with backernd service URL
 
 @app.get("/")
 def index(request: Request):
