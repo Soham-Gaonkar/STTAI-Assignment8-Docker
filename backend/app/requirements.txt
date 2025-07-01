@@ -1,4 +1,5 @@
 fastapi
 uvicorn
-elasticsearch
+elasticsearch<8.0.0
 pydantic
+elastic-transport

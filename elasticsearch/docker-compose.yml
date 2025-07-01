@@ -14,7 +14,7 @@ services:
     networks:
       - es-network
 
-  backend:
+  backend:            ## container name is elasticsearch-backend 1 but frontend should search by the service name which is correct in our case service name != backend url 
     build: ../backend/app
     expose:
       - "9567"
